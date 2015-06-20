@@ -3,6 +3,7 @@
 # include <cstdlib>
 # include <tuple>
 # include <sstream>
+# include <list>
 
 /* Parsing argument classes */
 class TypedArg {
@@ -181,7 +182,7 @@ class Parser {
             registered[name] = arg;
         }
 
-        bool Parse(int argc, char **argv) {
+        bool Parse(int argc, char **argv, std::list<std::string>* remaining_args = nullptr) {
 
             for ( int i = 1; i < argc;) {
                 std::string current_name, current_value;
@@ -190,6 +191,9 @@ class Parser {
                     current_name = std::string(argv[i]+1);
                 } else if ( argv[i][0] == '-' && argv[i][1] == '-' ) {
                     current_name = std::string(argv[i]+2);
+                } else {
+                    if ( remaining_args != nullptr )
+                        remaining_args->push_back(std::string(argv[i]));
                 }
 
                 if ( i < (argc-1) && argv[i+1][0] == '-' ) {
